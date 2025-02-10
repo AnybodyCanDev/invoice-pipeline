@@ -6,7 +6,7 @@ from email.mime.text import MIMEText
 import hashlib
 
 # Set up logging
-logging.basicConfig(filename='invoice_processing.log', level=logging.INFO,
+logging.basicConfig(filename='stage1/invoice_processing.log', level=logging.INFO,
                     format='%(asctime)s %(levelname)s:%(message)s')
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
@@ -63,8 +63,8 @@ def process_email(message_id):
                     log_and_notify(f'Error reading PDF {file_name}: {e}')
                     all_pdfs_valid = False
 
-    # Send confirmation if all PDFs were valid
-    if all_pdfs_valid:
+    # Send confirmation if all PDFs were valid and sender is not the same as USER_ID
+    if all_pdfs_valid and USER_ID not in sender_email:
         send_confirmation_email(sender_email)
 
 def log_and_notify(message):
