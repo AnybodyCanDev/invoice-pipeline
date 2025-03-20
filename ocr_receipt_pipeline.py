@@ -118,7 +118,8 @@ def process_message(message):
                 json.dump(existing_data, f, indent=4)
 
             logging.info(f"📝 Receipt details stored in {RECEIPTS_JSON_FILE}")
-
+        
+        subprocess.run(["python", "/Users/kriti.bharadwaj03/digitalInvoiceProcessing/lakshya_validator.py"])
         # ✅ Mark email as processed
         save_processed_email(email_id)
 
@@ -132,7 +133,7 @@ def consume_kafka():
             KAFKA_TOPIC,
             bootstrap_servers=BOOTSTRAP_SERVERS,
             group_id="receipt_processor_group",
-            auto_offset_reset="earliest",
+            auto_offset_reset="latest",
             enable_auto_commit=False,
             value_deserializer=lambda v: json.loads(v.decode("utf-8"))
         )

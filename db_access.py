@@ -58,7 +58,7 @@ class InventoryValidator:
                 return
 
             query = """
-                UPDATE InvoiceStore 
+                UPDATE "InvoiceStore" 
                 SET 
                     zoho_po_number = %s,
                     scanned_data = %s::jsonb
@@ -95,7 +95,7 @@ class InventoryValidator:
             
             # Using lowercase table name
             query = """
-            INSERT INTO invoicestore (
+            INSERT INTO "InvoiceStore" (
                 invoice_id,
                 s3_url,
                 created_at
@@ -128,7 +128,7 @@ class InventoryValidator:
                 return
 
             query = """
-                UPDATE InvoiceStore 
+                UPDATE "InvoiceStore" 
                 SET zoho_bill_id = %s
                 WHERE invoice_id = %s;
             """
@@ -240,7 +240,7 @@ class InventoryValidator:
 
             query = """
                 SELECT zoho_bill_id 
-                FROM InvoiceStore 
+                FROM "InvoiceStore" 
                 WHERE zoho_po_number = %s;
             """
             
@@ -258,6 +258,44 @@ class InventoryValidator:
             log_error(f"❌ Error retrieving bill ID: {str(e)}")
             traceback.print_exc()
             return None
+    def _raise_flag(self, zoho_po_number, flag_type, flag_description, receipt_id=None):
+        """
+        Raise a flag for a problematic PO.
+        
+        Args:
+            zoho_po_number (str): PO number with issue
+            flag_type (str): Type of flag/issue
+            flag_description (str): Detailed description
+            receipt_id (int, optional): ID of receipt that triggered the flag
+        """
+        try:
+            if not self._ensure_connection():
+                log_error("Database connection failed")
+                return False
+
+            # Add receipt_id to description if provided
+            full_description = flag_description
+            if receipt_id:
+                full_description = f"Receipt ID {receipt_id}: {flag_description}"
+
+            log_info(
+                f"Raising flag for PO {zoho_po_number}: {flag_type} (Receipt ID: {receipt_id if receipt_id else 'None'})")
+
+            self.cursor.execute(
+                """INSERT INTO "RaiseFlags" (zoho_po_number, flag_type, flag_description, created_at)
+                VALUES (%s, %s, %s, %s)""",
+                (zoho_po_number, flag_type, full_description, datetime.datetime.now())
+            )
+
+            self.conn.commit()
+            return True
+
+        except Exception as e:
+            log_error(f"Error raising flag: {str(e)}")
+            if self.conn:
+                self.conn.rollback()
+            return False
+
 
         
 

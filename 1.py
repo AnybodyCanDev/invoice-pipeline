@@ -63,7 +63,7 @@ def send_to_kafka(gmail_service, message_id):
         # Determine the Kafka topic based on subject
         if "invoice" in subject:
             kafka_topic = "email-invoices"
-        elif "GRN" in subject_upper:
+        elif "GRN" in subject:
             kafka_topic = "GRN"
         else:
             logging.info(f"Skipping email {message_id}, subject does not match: {subject}")

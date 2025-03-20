@@ -42,6 +42,8 @@ def run_ocr_extraction(pdf_file,email_id):
         print(f"❌ OCR extraction failed: {e}")
         sys.exit(1)
 
+
+import time
 import requests
 
 def get_purchase_order_id(po_number):
@@ -54,6 +56,9 @@ def get_purchase_order_id(po_number):
     try:
         print(f"🔍 Searching PO ID for PO Number: {po_number}")
         response = requests.get(endpoint, headers=headers)
+
+        # Wait 2 seconds to ensure Zoho processes the request
+        time.sleep(2)
 
         if response.status_code == 200:
             data = response.json()
@@ -74,6 +79,7 @@ def get_purchase_order_id(po_number):
     except Exception as e:
         print(f"❌ Exception: {str(e)}")
         return None
+
 
 def display_validation_results(results, po_number):
     """Display validation results with nice formatting."""

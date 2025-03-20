@@ -15,46 +15,42 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(parent_dir)
 
 # Configure Gemini API
-API_KEY = "AIzaSyArPDGh4zx22TN-uZ3kIo3KC4SrgF4_C4s"
+API_KEY = "AIzaSyDyV5OTdZ_GjgJIDEIiT5Qv6QYmg_hIGSc"
 genai.configure(api_key=API_KEY)
 model = genai.GenerativeModel("gemini-1.5-pro-latest")
 
-def ocr_pdf(pdf_path, output_text_file=None):
+def ocr_file(file_path):
     """
-    Extract text from a scanned PDF using PyMuPDF and Tesseract OCR.
-    No Poppler required.
+    Extract text from a PDF or image file using PyMuPDF (for PDFs) and Tesseract OCR.
     """
     text = ""
-    pdf_document = fitz.open(pdf_path)
-
-    for page_num in range(len(pdf_document)):
-        page = pdf_document[page_num]
-
-        # Try extracting text directly (if it's a normal PDF with selectable text)
-        page_text = page.get_text()
-
-        # If no text is found, use OCR
-        if len(page_text.strip()) < 10:
-            print(f"Using OCR for page {page_num + 1}...")
-
-            # Convert the page to an image
-            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))  # Increase resolution
-            img = Image.open(io.BytesIO(pix.tobytes()))
-
-            # Convert to RGB mode if needed
-            if img.mode != "RGB":
-                img = img.convert("RGB")
-
-            # Perform OCR
-            page_text = pytesseract.image_to_string(img)
-
-        text += f"\n\n--- Page {page_num + 1} ---\n\n" + page_text
+    file_ext = file_path.lower().split(".")[-1]
     
-    # Optionally save the extracted text to a file
-    if output_text_file:
-        with open(output_text_file, "w", encoding="utf-8") as f:
-            f.write(text)
-        print(f"Extracted text saved to {output_text_file}")
+    if file_ext in ["pdf"]:
+        pdf_document = fitz.open(file_path)
+        for page_num in range(len(pdf_document)):
+            page = pdf_document[page_num]
+            page_text = page.get_text()
+            
+            if len(page_text.strip()) < 10:  # If no text, use OCR
+                print(f"Using OCR for page {page_num + 1}...")
+                pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))  # Increase resolution
+                img = Image.open(io.BytesIO(pix.tobytes()))
+                if img.mode != "RGB":
+                    img = img.convert("RGB")
+                page_text = pytesseract.image_to_string(img)
+            
+            text += f"\n\n--- Page {page_num + 1} ---\n\n" + page_text
+    
+    elif file_ext in ["png", "jpg", "jpeg", "tiff", "bmp", "gif"]:
+        print("Processing image for OCR...")
+        img = Image.open(file_path)
+        if img.mode != "RGB":
+            img = img.convert("RGB")
+        text = pytesseract.image_to_string(img)
+    
+    else:
+        raise ValueError("Unsupported file format. Please use PDF or an image file.")
     
     return text
 
@@ -121,6 +117,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     pdf_file = sys.argv[1]
+    # pdf_file = "/Users/kriti.bharadwaj03/digitalInvoiceProcessing/Akaunting/invoices/Invoice_img.jpeg"
     
     # Optional: Extract email_id if provided
     email_id = sys.argv[2] if len(sys.argv) > 2 else None
@@ -129,7 +126,7 @@ if __name__ == "__main__":
     os.makedirs("Akaunting/data", exist_ok=True)
 
     # Process the PDF
-    extracted_text = ocr_pdf(pdf_file, output_text_file="Akaunting/data/extracted_text.txt")
+    extracted_text = ocr_file(pdf_file)
     structured_data = extract_warehouse_receipt(extracted_text)
 
     # Save the structured data

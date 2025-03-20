@@ -113,6 +113,7 @@ Don't include any explanations or markdown in your response, just the clean JSON
     print(f"Response: {response.text}")
 
     invoicejsontext = response.text[8:-4]
+    print(invoicejsontext)
     invoicejson = json.loads(invoicejsontext)
 
     # Save it to a file
@@ -144,7 +145,7 @@ if __name__ == "__main__":
     pdf_file = sys.argv[1] 
     email_id = sys.argv[2]
       # Example Usage
-    API_KEY = "AIzaSyArPDGh4zx22TN-uZ3kIo3KC4SrgF4_C4s"  # Replace with your actual key
+    API_KEY = "AIzaSyDyV5OTdZ_GjgJIDEIiT5Qv6QYmg_hIGSc"  # Replace with your actual key
     genai.configure(api_key=API_KEY)
     model = genai.GenerativeModel("gemini-1.5-pro-latest")
     # pdf_file = "Akaunting/invoices/INV_DUNDER_MIFFLIN_2.pdf"  # Replace with your PDF file path

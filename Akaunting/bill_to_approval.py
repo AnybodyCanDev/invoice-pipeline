@@ -1,8 +1,9 @@
 import requests
-from utils.logger import log_info
+
 import config
 import os
 import sys
+
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 # Add parent directory to sys.path
@@ -10,6 +11,7 @@ sys.path.append(parent_dir)
 
 # Now import db_access
 from db_access import InventoryValidator
+from Akaunting.utils.logger import log_info
 
 # Zoho API credentials from config
 ZOHO_ORG_ID = config.ZOHO_ORG_ID
