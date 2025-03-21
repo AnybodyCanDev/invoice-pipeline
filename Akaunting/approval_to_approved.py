@@ -1,5 +1,4 @@
 import requests
-
 import config
 import os
 import sys
@@ -12,6 +11,7 @@ sys.path.append(parent_dir)
 # Now import db_access
 from db_access import InventoryValidator
 from Akaunting.utils.logger import log_info
+from Akaunting.updater import get_bill_id_from_number
 
 # Zoho API credentials from config
 ZOHO_ORG_ID = config.ZOHO_ORG_ID
@@ -65,50 +65,47 @@ def refresh_access_token():
     else:
         log_info(f"❌ Failed to refresh token: {token_data.get('error')}")
         return None
-def initialize_approval(self, invoice_id):
-        """Set initial approval to the cost center (Level 0)."""
-        try:
-            if not self._ensure_connection():
-                return
-            approval_id = str(uuid.uuid4())  
-            query = """
-    INSERT INTO "Approval" ("approval_id", "invoice_id", "emp_id", "created_at", "approval_level", "category")
-    VALUES (%s, %s, 0, NOW(), 0, 'Cost Center')
-"""
-            self.cursor.execute(query, (approval_id, invoice_id,))
-            self.conn.commit()
-            log_info(f"Invoice {invoice_id} assigned to Cost Center (Level 0).")
 
-        except Exception as e:
-            log_error(f"Error initializing approval for invoice {invoice_id}: {str(e)}")
-            traceback.print_exc()
-        
-        return True
-def submit_bill_for_approval(bill_id,po_short):
+def approve_pending_invoice(bill_id, po_short):
     """
-    Submits a draft bill for approval in Zoho Books.
+    Approves a pending invoice in Zoho Books.
+    Converts the invoice from 'pending approval' to 'approved' status.
+    
+    Args:
+        invoice_id (str): The ID of the invoice to approve
+        po_short (str): Short reference for the purchase order
+        
+    Returns:
+        bool: True if successful, False otherwise
     """
     headers = get_auth_headers()
     if not headers:
         return False
     
-    submit_url = f"https://www.zohoapis.in/books/v3/bills/{bill_id}/submit?organization_id={config.ZOHO_ORG_ID}"
-    response = requests.post(submit_url, headers=headers)
+    # Endpoint to approve an invoice
+    approve_url = f"https://www.zohoapis.in/books/v3/bills/{bill_id}/approve?organization_id={config.ZOHO_ORG_ID}"
+    
+    # Make the approval request (no additional data needed, as per the requirements)
+    response = requests.post(approve_url, headers=headers)
     
     response_json = response.json()
     
     if response_json.get("code") == 0:
+        # Log the successful approval
         validator = InventoryValidator()
         validator.test_connection()
-        validator.log_to_system('invoice',po_short,{},'Converted to pending approval')
-        log_info(f"✅ Bill {bill_id} is now 'Pending Approval'.")
-        #logic for hierarchy
-        initialize_approval(bill_id)
+        validator.log_to_system('invoice', po_short, {}, 'Converted to approved')
+        log_info(f"✅ Invoice {bill_id} has been approved successfully.")
+        return True
     else:
-        log_info(f"❌ Failed to submit Bill {bill_id}. Response: {response.text}")
+        log_info(f"❌ Failed to approve Invoice {bill_id}. Response: {response.text}")
         return False
 
 # Example usage
 if __name__ == "__main__":
-    bill_id = "2353408000000090006"  # Replace with actual bill ID
-    submit_bill_for_approval(bill_id)
+    if len(sys.argv) < 2:
+          print("❌ No PDF file provided. Exiting.")
+          sys.exit(1)
+    po_num = sys.argv[1]
+    bill_id = get_bill_id_from_number(po_num)        # Replace with actual PO reference
+    approve_pending_invoice(bill_id, po_num)

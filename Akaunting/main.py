@@ -13,6 +13,7 @@ from OCR_PDF import ocr_pdf, format_with_gemini
 from token_manager import get_auth_headers
 import sys
 import os
+import subprocess
 from bill_to_approval import submit_bill_for_approval
 # Get the parent directory of the current script
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -111,6 +112,7 @@ def display_validation_results(results, po_number):
                 if receipt_status:
                     bill_id = validator.get_bill_id(po_number)
                     submit_bill_for_approval(bill_id,po_short)
+                    
                     
             else:
                 print(f"  ✓ Invoice matches purchase order")

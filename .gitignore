@@ -20,4 +20,4 @@ __pycache__
 *.txt
 *.json
 *.prisma
-*.pickle
+token.pickle
