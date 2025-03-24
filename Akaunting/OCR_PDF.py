@@ -54,9 +54,9 @@ def format_with_gemini(data):
     prompt = """
 You are a specialized AI assistant for extracting invoice data from text and converting it to a structured JSON format.
 
-I'll provide the text extracted from an invoice. Please extract the following information and format it as JSON:
+I'll provide the text extracted from an invoice. Make sure you store the PO No. as bill_number in the extracted json. Please extract the following information and format it as JSON:
 - Vendor name (company issuing the invoice)
-- Bill/invoice number
+- PO number, not the invoice number
 - Bill/invoice date
 - Due date or payment terms
 - Bill-to information (name and address)

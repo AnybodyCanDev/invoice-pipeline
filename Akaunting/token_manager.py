@@ -47,7 +47,7 @@ class ZohoTokenManager:
 
     def get_access_token(self):
         # Refresh the token if it's within 5 minutes of expiring.
-        if time.time() > self.expiration_time - 300:
+        if time.time() > self.expiration_time - 120:
             print("Token expiring soon, refreshing...")
             new_token = refresh_access_token()
             if new_token:
