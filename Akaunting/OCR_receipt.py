@@ -15,7 +15,7 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(parent_dir)
 
 # Configure Gemini API
-API_KEY = "AIzaSyDyV5OTdZ_GjgJIDEIiT5Qv6QYmg_hIGSc"
+API_KEY = "GEMINI_KEY"
 genai.configure(api_key=API_KEY)
 model = genai.GenerativeModel("gemini-1.5-pro-latest")
 
