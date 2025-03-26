@@ -14,7 +14,7 @@ import config
 class InventoryValidator:
     def __init__(self):
         """Initialize the inventory validator with database configuration."""
-        self.db_url = "postgresql://neondb_owner:npg_EY4dmMAPZ6bN@ep-cool-butterfly-a5mk6awz-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
+        self.db_url = "DATABASE_URL"
         self.conn = None
         self.cursor = None
         self._connect_db()
