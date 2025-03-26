@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime, timedelta
 
 # Database connection string
-DB_URL = "postgresql://neondb_owner:npg_EY4dmMAPZ6bN@ep-cool-butterfly-a5mk6awz-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
+DB_URL = "DATABASE_URL"
 
 def populate_test_data():
     """Populate the database with test data for the invoice approval system."""
