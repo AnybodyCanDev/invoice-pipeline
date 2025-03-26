@@ -126,7 +126,7 @@ if __name__ == "__main__":
 
     pdf_file = sys.argv[1] 
       # Example Usage
-    API_KEY = "AIzaSyBs0wAUYNUrSpQYyD__MG0z0X6AAyuqCb8"  # Replace with your actual key
+    API_KEY = "GEMINI_API_KEY"  # Replace with your actual key
     genai.configure(api_key=API_KEY)
     model = genai.GenerativeModel("gemini-1.5-pro-latest")
     # pdf_file = "Akaunting/invoices/INV_DUNDER_MIFFLIN_2.pdf"  # Replace with your PDF file path
