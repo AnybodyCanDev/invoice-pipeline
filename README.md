@@ -1,4 +1,4 @@
-# DigitalInvoiceProcessing
+f# DigitalInvoiceProcessing
 
 ## Overview
 This project is an automated invoice processing pipeline that leverages Kafka for message streaming, OCR technology for document processing, and integrates with various cloud and database services.
@@ -119,10 +119,6 @@ python ocr_receipt_pipeline.py
 - Microservices design
 - OCR-powered document processing
 - Cloud storage integration (S3)
-
-# Invoice Pipeline Project
-
-[... previous content remains the same ...]
 
 ## Credentials and Configuration
 
