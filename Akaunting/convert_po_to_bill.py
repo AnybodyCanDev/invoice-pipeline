@@ -2,6 +2,7 @@ import requests
 from utils.logger import log_info
 import sys
 import os
+import config
 from token_manager import ZohoTokenManager
 
 # Get the parent directory of the current script
@@ -14,7 +15,7 @@ sys.path.append(parent_dir)
 from db_access import InventoryValidator
 
 # Zoho API credentials and organization ID
-ZOHO_ORG_ID = "60038600013"
+ZOHO_ORG_ID = config.ZOHO_ORG_ID
 
 # Token manager instance
 token_manager = ZohoTokenManager()
