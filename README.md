@@ -120,21 +120,102 @@ python ocr_receipt_pipeline.py
 - OCR-powered document processing
 - Cloud storage integration (S3)
 
-## Potential Improvements
-- Add comprehensive error handling
-- Implement logging mechanisms
-- Create unit and integration tests
-- Add more robust validation checks
+# Invoice Pipeline Project
 
-## Contributing
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a new Pull Request
+[... previous content remains the same ...]
 
-## License
-[Specify the license under which this project is distributed]
+## Credentials and Configuration
 
-## Contact
-[Add contact information for the project maintainers]
+### Environment Variables and Configuration Files
+
+#### 1. Database Configuration
+##### `db_access.py` and `lakshya_validator.py`
+- **Required Credential**: `DATABASE_URL`
+- **Configuration**:
+  ```python
+  self.db_url = "postgresql://username:password@host:port/database"
+  ```
+
+#### 2. AWS S3 Configuration
+##### `grn_uploader.py` and `invoice_uploader.py`
+- **Required Credentials**:
+  - `AWS_ACCESS_KEY`
+  - `AWS_SECRET_KEY`
+  - `S3_BUCKET_NAME`
+- **Environment Setup**:
+  ```bash
+  export AWS_ACCESS_KEY='your_aws_access_key'
+  export AWS_SECRET_KEY='your_aws_secret_key'
+  export S3_BUCKET_NAME='your-s3-bucket-name'
+  ```
+
+#### 3. OCR API Configuration
+##### `ocr_pdf_grn.py` and `Akaunting/OCR_receipt.py`
+- **Required Credential**: `GEMINI_API_KEY`
+- **Configuration**:
+  ```python
+  API_KEY = "your_gemini_api_key_here"
+  ```
+
+#### 4. Database Population
+##### `populate_tables.py`
+- **Note**: This is a sample file for populating tables during testing
+- **Required Credential**: `DATABASE_URL`
+  ```python
+  DB_URL = "postgresql://username:password@host:port/database"
+  ```
+
+#### 5. Zoho Integration
+##### `config.py`
+**Configuration Template** (DO NOT include actual credentials in version control):
+```python
+# Zoho API Configuration
+ZOHO_ORG_ID = ''  # Your Zoho Organization ID
+ZOHO_CLIENT_ID = ''  # OAuth Client ID
+ZOHO_CLIENT_SECRET = ''  # OAuth Client Secret
+ZOHO_ACCESS_TOKEN = ''  # Initially obtained access token
+ZOHO_REFRESH_TOKEN = ''  # Stored refresh token
+
+# API Endpoints
+ZOHO_API_DOMAIN = "https://www.zohoapis.in"
+TOKEN_REFRESH_URL = "https://accounts.zoho.in/oauth/v2/token"
+
+# Token Expiry
+ACCESS_TOKEN_LIFESPAN = 3600  # 1 hour in seconds
+```
+
+#### 6. PostgreSQL Connection
+##### `updater.py`
+**Database Connection Configuration**:
+```python
+def get_db_connection():
+    return psycopg2.connect(
+        dbname="your_database_name",
+        user="your_postgresql_username",
+        password="your_postgresql_password",
+        host="your_database_host",
+        port="your_database_port"
+    )
+```
+
+### Kafka Topics Configuration
+
+#### Required Kafka Topics
+1. `email-invoices`: For email invoice processing
+2. `grn`: For Goods Received Notes
+3. `ocr`: For OCR processing of invoices
+4. `ocr_grn`: For OCR processing of Goods Received Notes
+
+### Security and Best Practices
+- **Never commit sensitive credentials to version control**
+- Use environment variables or secure secret management systems
+- Rotate credentials periodically
+- Limit access to credentials
+- Use `.env` files or secret management tools for local development
+
+
+## Troubleshooting Credentials
+- Verify all API keys and connection strings
+- Check network connectivity
+- Ensure proper IAM roles and permissions
+- Validate token expiration and refresh mechanisms
