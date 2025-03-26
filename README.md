@@ -1,4 +1,4 @@
-f# DigitalInvoiceProcessing
+# DigitalInvoiceProcessing
 
 ## Overview
 This project is an automated invoice processing pipeline that leverages Kafka for message streaming, OCR technology for document processing, and integrates with various cloud and database services.
