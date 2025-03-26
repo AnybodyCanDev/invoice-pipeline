@@ -7,11 +7,11 @@ from convert_po_to_bill import refresh_access_token
 # Connect to PostgreSQL
 def get_db_connection():
     return psycopg2.connect(
-        dbname="grn_tracking",
-        user="kriti.bharadwaj03",  # Change this to your PostgreSQL username
-        password="abcd_deloitte1",  # Change this to your PostgreSQL password
-        host="localhost",
-        port="5432"
+        dbname="",
+        user="",  # Change this to your PostgreSQL username
+        password="",  # Change this to your PostgreSQL password
+        host="",
+        port=""
     )
 
 def get_bill_id_from_number(bill_number):
